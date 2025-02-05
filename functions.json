@@ -1,0 +1,38 @@
+{
+  "functions": [
+    {
+      "name": "get_weather",
+      "description": "Get the current weather for a given location.",
+      "parameters": {
+        "location": {
+          "type": "string",
+          "description": "City name (e.g., 'Stockholm')"
+        }
+      }
+    },
+    {
+      "name": "add_numbers",
+      "description": "Add two numbers together.",
+      "parameters": {
+        "num1": {
+          "type": "integer",
+          "description": "First number"
+        },
+        "num2": {
+          "type": "integer",
+          "description": "Second number"
+        }
+      }
+    },
+    {
+      "name": "get_time",
+      "description": "Get the current time in a given timezone.",
+      "parameters": {
+        "timezone": {
+          "type": "string",
+          "description": "Timezone (e.g., 'Europe/Stockholm')"
+        }
+      }
+    }
+  ]
+}
