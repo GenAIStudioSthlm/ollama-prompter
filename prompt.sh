@@ -48,9 +48,11 @@ check_model_exists "$MODEL_NAME"
 
 # Read and clean system prompt (remove newlines and escape quotes)
 SYSTEM_PROMPT=$(cat system.txt | tr '\n' ' ' | sed 's/"/\\"/g')
+#SYSTEM_PROMPT=$(jq -Rs . < system.txt)
 
 # Read functions from JSON and format them as a string
-FUNCTIONS=$(jq -c '.functions' functions.json)
+FUNCTIONS=$(jq -c . functions.json)
+
 
 echo "🤖 Ollama Chat (Model: $MODEL_NAME) - Type 'exit' to quit."
 
@@ -71,17 +73,28 @@ while true; do
     continue
   fi
 
+
+  # Escape user input properly
+  ESCAPED_USER_MESSAGE=$(echo "$USER_MESSAGE" | jq -Rs .)
+
+  JSON_PAYLOAD=$(jq -n \
+    --arg model "$MODEL_NAME" \
+    --arg system_prompt "$SYSTEM_PROMPT" \
+    --argjson functions "$FUNCTIONS" \
+    --arg user_message "$ESCAPED_USER_MESSAGE" \
+    '{
+      model: $model,
+      messages: [
+        { role: "system", content: $system_prompt },
+        { role: "system", content: "Available functions", functions: $functions },
+        { role: "user", content: $user_message }
+      ]
+    }')
+  
   # Make API request to Ollama
   RESPONSE=$(curl -s http://localhost:11434/v1/chat/completions \
     -H "Content-Type: application/json" \
-    -d "{
-      \"model\": \"$MODEL_NAME\",
-      \"messages\": [
-        { \"role\": \"system\", \"content\": \"$SYSTEM_PROMPT\" },
-        { \"role\": \"system\", \"content\": \"Available functions: $FUNCTIONS\" },
-        { \"role\": \"user\", \"content\": \"$USER_MESSAGE\" }
-      ]
-    }")
+    -d "$JSON_PAYLOAD")
 
   # Print formatted response
   echo "🤖 Ollama:"
