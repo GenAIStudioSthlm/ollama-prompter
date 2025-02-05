@@ -29,13 +29,13 @@ Make sure Ollama is installed and running:
 ```cd <repo-folder>```
 
 ### Make the script executable
-```chmod +x test.sh```
+```chmod +x prompt.sh```
 
 ## Usage
 
 Start Chat with a Specific Model
 
-```./test.sh llama3:8b```
+```./prompt.sh llama3:8b```
 
 If no model is specified, it defaults to llama3:8b.
 
